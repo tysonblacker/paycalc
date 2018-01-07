@@ -22,17 +22,45 @@
 
 <div class="container bg-lightgreen">
   <h2>Tax Calculator</h2>
+
+<form>
+  <div class="row">
+    <div class="col">
+      Income: <input type="text" id="orginal_income" value="100000">
+    </div>
+    <div class="col">
+    Deductable Debt: <input type="text" id="debt" value="100000">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      Montly Rent: <input type="text" id="monthly_rent" value="1000"><br>
+    </div>
+    <div class="col">
+    Deductable Interest Rate: <input type="text" id="interest_rate" value="5" ><br>
+    </div>
+  </div>
+</form>
+
   <form>
-    <div class=
+    <div class="row">
+    <div class="col">
     Income:<br>
     <input type="text" id="orginal_income" value="100000"><br>
     Deductable Debt:<br>
     <input type="text" id="debt" value="100000"><br>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col">
     Deductable Interest Rate:<br>
-    <input type="text" id="interest_rate" value="10"><br>
+    <input type="text" id="interest_rate" value="5" ><br>
     Montly Rent:<br>
     <input type="text" id="monthly_rent" value="1000"><br>
+    </div>
+  </div>
   </form>
+
 
   <button class="btn-primary" onclick="updateTax()">Let's Calculate Tax</button>
 
@@ -72,14 +100,17 @@
 
 </div>
 
+</body>
+</html>
+
 <script>
 
-  function calcInterest(interst_rate, debt) {
-    interst_rate * debt;
+  function calcInterest(interest_rate, debt) {
+    interest_rate * debt;
   }
 
   function updateTax () {
-    var income = $("#orginal_income").val();
+    var income = document.getElementById("orginal_income").value;
 
     console.log(income)
 
@@ -94,8 +125,7 @@
     var taxible_income = income - interest;
     var tax = calcTax(taxible_income);
     
-    $("#taxible_income").text(taxible_income);
-
+    $("#taxible_income").text(income);
     $("#tax").text(tax);
     //var medicare_levy = document.getElementById(mls)
     var medicare_levy = 0.02 * taxible_income;
@@ -112,6 +142,7 @@
     $("#post_rent_monthly").text(monthly(post_rent_income));
     $("#post_rent_weekly").text((post_rent_income));
     $("#post_rent_daily").text(daily(post_rent_income));
+    
   }
 
   function monthly(yearly) {
@@ -143,10 +174,6 @@
     } 
   }
 
-  updateTax();
 
 </script>
 
-
-</body>
-</html>
