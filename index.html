@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Australian Tax Calculator</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/paycalc.css" rel="stylesheet">
+  </head>
+
+<body>
+
+<nav class="navbar navbar-toggleable-md bg-green">
+  
+  Tax Calculator
+
+</nav>
+
+<div class="container bg-lightgreen">
+  <h2>Tax Calculator</h2>
+  <form>
+    <div class=
+    Income:<br>
+    <input type="text" id="orginal_income" value="100000"><br>
+    Deductable Debt:<br>
+    <input type="text" id="debt" value="100000"><br>
+    Deductable Interest Rate:<br>
+    <input type="text" id="interest_rate" value="10"><br>
+    Montly Rent:<br>
+    <input type="text" id="monthly_rent" value="1000"><br>
+  </form>
+
+  <button class="btn-primary" onclick="updateTax()">Let's Calculate Tax</button>
+
+<table>
+  <tr> 
+    <td>Salary</td><td id="income"></td>
+  </tr>
+  <tr> 
+    <td>Tax</td><td id="tax"></td>
+  </tr>
+  <tr> 
+    <td>Medicare</td><td id="medicare_levy"></td>
+  </tr>
+  <tr> 
+    <td>Taxible Income</td><td id="taxible_income"></td>
+  </tr>
+</table>
+<hr>
+<table class="table">
+  <th>
+    <td>Before Rent</td><td>After Rent</td>
+  </th>
+  <tr> 
+    <td>Gross Income</td><td id="gross_income"></td><td id="post_rent"></td>
+  </tr>
+  <tr> 
+    <td>Monthly Gross Income</td><td id="monthly_gross_income"></td><td id="post_rent_monthly"></td>
+  </tr>
+  <tr> 
+    <td>Weekly Gross Income</td><td id="weekly_gross_income"></td><td id="post_rent_weekly"></td>
+  </tr>
+  <tr> 
+    <td>Daily Gross Income</td><td id="daily_gross_income"></td><td id="post_rent_daily"></td>
+  </tr>
+
+  </table>
+
+</div>
+
+<script>
+
+  function calcInterest(interst_rate, debt) {
+    interst_rate * debt;
+  }
+
+  function updateTax () {
+    var income = $("#orginal_income").val();
+
+    console.log(income)
+
+    //document.getElementById("income").innerHTML = income;
+    $("#income").text(income);
+
+    var interest_rate = $("#interest_rate").val();
+    var debt = $("#debt").val();
+
+    var yearly_rent = $("#monthly_rent").val() * 12;
+    var interest = interest_rate/100 * debt;
+    var taxible_income = income - interest;
+    var tax = calcTax(taxible_income);
+    
+    $("#taxible_income").text(taxible_income);
+
+    $("#tax").text(tax);
+    //var medicare_levy = document.getElementById(mls)
+    var medicare_levy = 0.02 * taxible_income;
+    var gross_income = taxible_income - tax - medicare_levy;
+    $("#gross_income").text(gross_income.toFixed(2));
+    $("#medicare_levy").text(medicare_levy.toFixed(2));
+    $("#monthly_gross_income").text(monthly(gross_income));
+    $("#weekly_gross_income").text(weekly(gross_income));
+    $("#daily_gross_income").text(daily(gross_income));
+    
+    post_rent_income = gross_income - yearly_rent;
+    $("#post_rent").text(post_rent_income.toFixed(2));
+    $("#medicare_levy").text(medicare_levy.toFixed(2));
+    $("#post_rent_monthly").text(monthly(post_rent_income));
+    $("#post_rent_weekly").text((post_rent_income));
+    $("#post_rent_daily").text(daily(post_rent_income));
+  }
+
+  function monthly(yearly) {
+    return (yearly/12).toFixed(2)
+  }
+  function weekly(yearly) {
+    return (yearly/365*7).toFixed(2)
+  }
+  function daily(yearly) {
+    return (yearly/365).toFixed(2)
+  }
+
+
+  function calcTax(income) {
+    if (income < 18001) {
+      return 0
+    }
+    if (income < 37001) {
+      return 0.19 * (income - 18000)
+    }
+    if (income < 87001) {
+      return 3572 + (0.325 * (income - 37000))
+    }
+    if (income < 180001) {
+      return 19822 + (0.37 * (income - 87000))
+    }
+    if (income > 180000) {
+      return 54232 + (0.45 * (income - 180000))
+    } 
+  }
+
+  updateTax();
+
+</script>
+
+
+</body>
+</html>
