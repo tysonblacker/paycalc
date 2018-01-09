@@ -25,46 +25,57 @@
 
 <form>
   <div class="row">
-    <div class="col">
-      Income: <input type="text" id="orginal_income" value="100000">
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label for="orginal_income">Income: </label> 
+        <input type="text" id="orginal_income" value="100000" class="form-control"> 
+      </div>
     </div>
-    <div class="col">
-    Deductable Debt: <input type="text" id="debt" value="100000">
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label for="debt">Debt: </label> 
+        <input type="text" id="debt" value="300000" class="form-control">
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label for="monthly_rent">Monthly Rent: </label>
+        <input type="text" id="monthly_rent" value="1000" class="form-control">
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label for="hobbies">Hobby Memberships </label>
+        <input type="text" id="hobbies" class="form-control" value="500">
+      </div>
     </div>
   </div>
   <div class="row">
-    <div class="col">
-      Montly Rent: <input type="text" id="monthly_rent" value="1000"><br>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label for="interest_rate">Deductable Interest Rate: </label>
+        <input type="text" id="interest_rate" value="5" class="form-control">
+      </div>
     </div>
-    <div class="col">
-    Deductable Interest Rate: <input type="text" id="interest_rate" value="5" ><br>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label for="insurances"> Insurances and Rego: </label>
+        <input type="text" id="insurances" value="2500" class="form-control" placeholder="Car/health/property" >
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label for="telephone"> Phone Bill Monthly: </label>
+        <input type="text" id="telephone" value="50" class="form-control">
+      </div>
     </div>
   </div>
 </form>
+ 
+  <button class="btn-primary btn btn-primary mt-25px" onclick="updateTax()">Let's Calculate Tax</button>
 
-  <form>
-    <div class="row">
-    <div class="col">
-    Income:<br>
-    <input type="text" id="orginal_income" value="100000"><br>
-    Deductable Debt:<br>
-    <input type="text" id="debt" value="100000"><br>
-    </div>
-    </div>
-    <div class="row">
-    <div class="col">
-    Deductable Interest Rate:<br>
-    <input type="text" id="interest_rate" value="5" ><br>
-    Montly Rent:<br>
-    <input type="text" id="monthly_rent" value="1000"><br>
-    </div>
-  </div>
-  </form>
-
-
-  <button class="btn-primary" onclick="updateTax()">Let's Calculate Tax</button>
-
-<table>
+<div class="col-sm-5">
+<table class="table">
   <tr> 
     <td>Salary</td><td id="income"></td>
   </tr>
@@ -72,33 +83,35 @@
     <td>Tax</td><td id="tax"></td>
   </tr>
   <tr> 
-    <td>Medicare</td><td id="medicare_levy"></td>
-  </tr>
-  <tr> 
     <td>Taxible Income</td><td id="taxible_income"></td>
   </tr>
+  <tr> 
+    <td>Medicare</td><td id="medicare_levy"></td>
+  </tr>
 </table>
+</div>
 <hr>
 <table class="table">
   <th>
-    <td>Before Rent</td><td>After Rent</td>
+    <td>Before Rent</td><td>After Expenses</td>
   </th>
   <tr> 
-    <td>Gross Income</td><td id="gross_income"></td><td id="post_rent"></td>
+    <td>Gross Income</td><td id="gross_income"></td><td id="post_expenses"></td>
   </tr>
   <tr> 
-    <td>Monthly Gross Income</td><td id="monthly_gross_income"></td><td id="post_rent_monthly"></td>
+    <td>Monthly Gross Income</td><td id="monthly_gross_income"></td><td id="post_exp_monthly"></td>
   </tr>
   <tr> 
-    <td>Weekly Gross Income</td><td id="weekly_gross_income"></td><td id="post_rent_weekly"></td>
+    <td>Weekly Gross Income</td><td id="weekly_gross_income"></td><td id="post_exp_weekly"></td>
   </tr>
   <tr> 
-    <td>Daily Gross Income</td><td id="daily_gross_income"></td><td id="post_rent_daily"></td>
+    <td>Daily Gross Income</td><td id="daily_gross_income"></td><td id="post_exp_daily"></td>
   </tr>
 
   </table>
 
 </div>
+
 
 </body>
 </html>
@@ -110,7 +123,7 @@
   }
 
   function updateTax () {
-    var income = document.getElementById("orginal_income").value;
+    var income = $("#orginal_income").val();
 
     console.log(income)
 
@@ -119,15 +132,15 @@
 
     var interest_rate = $("#interest_rate").val();
     var debt = $("#debt").val();
-
+    console.log(interest_rate)
     var yearly_rent = $("#monthly_rent").val() * 12;
     var interest = interest_rate/100 * debt;
+    console.log(interest)
     var taxible_income = income - interest;
     var tax = calcTax(taxible_income);
     
-    $("#taxible_income").text(income);
+    $("#taxible_income").text(taxible_income);
     $("#tax").text(tax);
-    //var medicare_levy = document.getElementById(mls)
     var medicare_levy = 0.02 * taxible_income;
     var gross_income = taxible_income - tax - medicare_levy;
     $("#gross_income").text(gross_income.toFixed(2));
@@ -136,12 +149,15 @@
     $("#weekly_gross_income").text(weekly(gross_income));
     $("#daily_gross_income").text(daily(gross_income));
     
-    post_rent_income = gross_income - yearly_rent;
-    $("#post_rent").text(post_rent_income.toFixed(2));
+
+    console.log(get_yearly_expenses())
+  
+    post_expenses_income = gross_income - get_yearly_expenses();
+    $("#post_expenses").text(post_expenses_income.toFixed(2));
     $("#medicare_levy").text(medicare_levy.toFixed(2));
-    $("#post_rent_monthly").text(monthly(post_rent_income));
-    $("#post_rent_weekly").text((post_rent_income));
-    $("#post_rent_daily").text(daily(post_rent_income));
+    $("#post_exp_monthly").text(monthly(post_expenses_income));
+    $("#post_exp_weekly").text(weekly(post_expenses_income));
+    $("#post_exp_daily").text(daily(post_expenses_income));
     
   }
 
@@ -155,6 +171,14 @@
     return (yearly/365).toFixed(2)
   }
 
+ function get_yearly_expenses() {
+    return (
+      eval($("#monthly_rent").val() * 12) 
+      + eval($("#insurances").val()) 
+      + eval($("#telephone").val() * 12) 
+      + eval($("#hobbies").val())
+    ) 
+ }
 
   function calcTax(income) {
     if (income < 18001) {
