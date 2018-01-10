@@ -27,25 +27,25 @@
   <div class="row">
     <div class="col-sm-3">
       <div class="form-group">
-        <label for="orginal_income">Income: </label> 
+        <label for="orginal_income">Income</label> 
         <input type="text" id="orginal_income" value="100000" class="form-control"> 
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
-        <label for="debt">Debt: </label> 
+        <label for="debt">Deductable Debt</label> 
         <input type="text" id="debt" value="1000000" class="form-control">
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
-        <label for="monthly_rent">Monthly Rent: </label>
+        <label for="monthly_rent">Monthly Rent</label>
         <input type="text" id="monthly_rent" value="1000" class="form-control">
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
-        <label for="hobbies">Hobby Memberships </label>
+        <label for="hobbies">Hobby Memberships</label>
         <input type="text" id="hobbies" class="form-control" value="500">
       </div>
     </div>
@@ -53,31 +53,33 @@
   <div class="row">
     <div class="col-sm-3">
       <div class="form-group">
-        <label for="interest_rate">Deductable Interest Rate: </label>
+        <label for="interest_rate">Deductable Interest Rate</label>
         <input type="text" id="interest_rate" value="5" class="form-control">
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
-        <label for="insurances"> Insurances and Rego: </label>
+        <label for="insurances"> Insurances and Rego</label>
         <input type="text" id="insurances" value="2500" class="form-control" placeholder="Car/health/property" >
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
-        <label for="telephone"> Phone Bill Monthly: </label>
+        <label for="telephone"> Phone Bill Monthly</label>
         <input type="text" id="telephone" value="50" class="form-control">
       </div>
     </div>
   </div>
 </form>
- 
-  <button class="btn-primary btn btn-primary mt-25px" onclick="updateTax()">Crunch the numbers</button>
-
+<hr>
+<button class="btn-primary btn btn-primary mt-25px" onclick="updateTax()">Crunch the numbers</button>
+<button class="btn-primary btn btn-primary mt-25px" onclick="readFromLocal()">Read</button>
+<button class="btn-primary btn btn-primary mt-25px" onclick="saveToLocal()">Save</button>
+<hr>
 <div class="col-sm-5">
 <table class="table">
   <tr> 
-    <td>Salary</td><td id="income"></td>
+    <td>Salary</td><td id="income"></td><td>Superannuation</td><td id="superannuation"></td>
   </tr>
   <tr> 
     <td>Tax</td><td id="tax"></td>
@@ -118,16 +120,18 @@
 
 <script>
 
+  // Create our number formatter.
+  
+
   function calcInterest(interest_rate, debt) {
     interest_rate * debt;
   }
 
   function updateTax () {
+
     var income = $("#orginal_income").val();
-
     console.log(income)
-
-    //document.getElementById("income").innerHTML = income;
+    
     $("#income").text(income);
 
     var interest_rate = $("#interest_rate").val();
@@ -139,6 +143,7 @@
     var taxible_income = income - interest;
     var tax = calcTax(taxible_income);
     
+    $("#superannuation").text(income * 0.095);
     $("#taxible_income").text(taxible_income);
     $("#tax").text(tax);
     var medicare_levy = 0.02 * taxible_income;
@@ -195,8 +200,38 @@
     }
     if (income > 180000) {
       return 54232 + (0.45 * (income - 180000))
-    } 
+    }
   }
+
+  function readFromLocal() {
+    console.log("reading");
+    console.log(localStorage.orginal_income);
+    $("#orginal_income").val(localStorage.orginal_income);
+    $("#interest_rate").val(localStorage.interest_rate);
+    $("#debt").val(localStorage.debt);
+    $("#monthly_rent").val(localStorage.monthly_rent);
+    $("#insurances").val(localStorage.insurances);
+    $("#telephone").val(localStorage.telephone);
+    $("#interest_rate").val(localStorage.interest_rate);
+    $("#hobbies").val(localStorage.hobbies);
+  }
+
+  function saveToLocal() {
+
+    localStorage.orginal_income = $("#orginal_income").val();
+    console.log(localStorage.orginal_income);
+    localStorage.interest_rate = $("#interest_rate").val();
+    localStorage.debt = $("#debt").val();
+    localStorage.monthly_rent = $("#monthly_rent").val();
+    localStorage.insurances = $("#insurances").val();
+    localStorage.telephone = $("#telephone").val();
+    localStorage.hobbies = $("#hobbies").val();
+    //localStorage.orginal_income = $("#orginal_income").val();
+    //localStorage.orginal_income = $("#orginal_income").val();
+  }
+
+
+
 
 
 </script>
