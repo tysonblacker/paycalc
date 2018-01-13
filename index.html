@@ -24,49 +24,80 @@
   <h2>Tax Calculator</h2>
 
 <form>
+  <h3>Income</h3>
   <div class="row">
     <div class="col-sm-3">
       <div class="form-group">
-        <label for="orginal_income">Income</label> 
-        <input type="text" id="orginal_income" value="100000" class="form-control"> 
+        <label for="payg_income">PAYG Income</label> 
+        <input type="text" id="payg_income" value="0" class="form-control"> 
       </div>
     </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label for="aus_dividends">Australian Dividends</label> 
+        <input type="text" id="aus_dividends" value="0" class="form-control"> 
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label for="other_income">Other Income</label> 
+        <input type="text" id="other_income" value="0" class="form-control">
+      </div>
+    </div>
+  </div> 
+  <h3>Costs</h3>
+  <div class="row">
+    
     <div class="col-sm-3">
       <div class="form-group">
         <label for="debt">Deductable Debt</label> 
-        <input type="text" id="debt" value="1000000" class="form-control">
+        <input type="text" id="deductable_debt" value="0" class="form-control">
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
+        <label for="debt">Non-Deductable Debt</label> 
+        <input type="text" id="debt" value="0" class="form-control">
+      </div>
+    </div>
+
+    <div class="col-sm-3">
+      <div class="form-group">
         <label for="monthly_rent">Monthly Rent</label>
-        <input type="text" id="monthly_rent" value="1000" class="form-control">
+        <input type="text" id="monthly_rent" value="0" class="form-control">
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
         <label for="hobbies">Hobby Memberships</label>
-        <input type="text" id="hobbies" class="form-control" value="500">
+        <input type="text" id="hobbies" class="form-control" value="0">
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-sm-3">
       <div class="form-group">
-        <label for="interest_rate">Deductable Interest Rate</label>
-        <input type="text" id="interest_rate" value="5" class="form-control">
+        <label for="interest_rate">Deductable Rate</label>
+        <input type="text" id="deductable_interest_rate" value="0" class="form-control">
+
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label for="interest_rate">Loan Rate</label>
+        <input type="text" id="interest_rate" value="0" class="form-control">
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
         <label for="insurances"> Insurances and Rego</label>
-        <input type="text" id="insurances" value="2500" class="form-control" placeholder="Car/health/property" >
+        <input type="text" id="insurances" value="0" class="form-control" placeholder="Car/health/property" >
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
         <label for="telephone"> Phone Bill Monthly</label>
-        <input type="text" id="telephone" value="50" class="form-control">
+        <input type="text" id="telephone" value="0" class="form-control">
       </div>
     </div>
   </div>
@@ -75,17 +106,18 @@
 <button class="btn-primary btn btn-primary mt-25px" onclick="updateTax()">Crunch the numbers</button>
 <button class="btn-primary btn btn-primary mt-25px" onclick="readFromLocal()">Read</button>
 <button class="btn-primary btn btn-primary mt-25px" onclick="saveToLocal()">Save</button>
+<button class="btn-primary btn btn-primary mt-25px" onclick="clearLocal()">Clear Local</button>
 <hr>
-<div class="col-sm-5">
+<div class="col-sm-6">
 <table class="table">
   <tr> 
-    <td>Salary</td><td id="income"></td><td>Superannuation</td><td id="superannuation"></td>
+    <td>Salary</td><td id="salary"></td><td>Superannuation</td><td id="superannuation"></td>
   </tr>
   <tr> 
-    <td>Tax</td><td id="tax"></td>
+    <td>Tax</td><td id="tax"></td><td>Total Dividends</td><td id="total_dividends"></td>
   </tr>
   <tr> 
-    <td>Taxible Income</td><td id="taxible_income"></td>
+    <td>Taxible Income</td><td id="taxible_income"></td><td>Company Tax</td><td id="company_tax"></td>
   </tr>
   <tr> 
     <td>Medicare</td><td id="medicare_levy"></td>
@@ -95,7 +127,7 @@
 <hr>
 <table class="table">
   <th>
-    <td>Before Rent</td><td>After Expenses</td>
+    <td>Before Expenses</td><td>After Expenses</td>
   </th>
   <tr> 
     <td>Gross Income</td><td id="gross_income"></td><td id="post_expenses"></td>
@@ -124,45 +156,66 @@
   
 
   function calcInterest(interest_rate, debt) {
-    interest_rate * debt;
+    interest_rate * debt * 0.01;
   }
 
   function updateTax () {
 
-    var income = $("#orginal_income").val();
-    console.log(income)
-    
-    $("#income").text(income);
+    var payg_income = $("#payg_income").val();
+    console.log(payg_income)
 
-    var interest_rate = $("#interest_rate").val();
-    var debt = $("#debt").val();
-    console.log(interest_rate)
+    //$("#income").text(income);
+
+    var deductable_interest_rate = $("#deductable_interest_rate").val();
+    var deductable_debt = $("#deductable_debt").val();
+    console.log("deductable debt " + deductable_debt + 
+      " deductable_interest_rate " + deductable_interest_rate);
+
+
     var yearly_rent = $("#monthly_rent").val() * 12;
-    var interest = interest_rate/100 * debt;
-    console.log(interest)
-    var taxible_income = income - interest;
+    var deductable_interest = deductable_interest_rate * deductable_debt * 0.01;
+    console.log("interest " + deductable_interest);
+
+    var total_dividends = eval($("#aus_dividends").val()) / .7 ;
+    console.log("total_dividends " + total_dividends);
+    var company_tax = total_dividends * .3;
+    console.log("company_tax " + company_tax)
+    var other_income = $("#other_income").val();
+
+    // Calcualations
+    var taxible_income = eval(payg_income) +
+                         eval(other_income) + 
+                         eval(total_dividends) -
+                         eval(deductable_interest) ;
     var tax = calcTax(taxible_income);
-    
-    $("#superannuation").text(income * 0.095);
-    $("#taxible_income").text(taxible_income);
-    $("#tax").text(tax);
     var medicare_levy = 0.02 * taxible_income;
-    var gross_income = taxible_income - tax - medicare_levy;
+    var gross_income = taxible_income - tax - medicare_levy - company_tax;
+    
+    $("#total_dividends").text(total_dividends.toFixed(2));
+    $("#company_tax").text(company_tax.toFixed(2));
+
+
+    // write the values to tables
+    $("#salary").text(payg_income);
+    $("#superannuation").text(payg_income * 0.095);
+    $("#taxible_income").text(eval(taxible_income).toFixed(2));
+    $("#tax").text(tax.toFixed(2));
+
     $("#gross_income").text(gross_income.toFixed(2));
     $("#medicare_levy").text(medicare_levy.toFixed(2));
     $("#monthly_gross_income").text(monthly(gross_income));
     $("#weekly_gross_income").text(weekly(gross_income));
     $("#daily_gross_income").text(daily(gross_income));
-    
 
-    console.log(get_yearly_expenses())
+    console.log(getYearlyExpenses())
   
-    post_expenses_income = gross_income - get_yearly_expenses();
+    post_expenses_income = gross_income - getYearlyExpenses();
     $("#post_expenses").text(post_expenses_income.toFixed(2));
     $("#medicare_levy").text(medicare_levy.toFixed(2));
     $("#post_exp_monthly").text(monthly(post_expenses_income));
     $("#post_exp_weekly").text(weekly(post_expenses_income));
     $("#post_exp_daily").text(daily(post_expenses_income));
+
     
   }
 
@@ -176,14 +229,15 @@
     return (yearly/365).toFixed(2)
   }
 
- function get_yearly_expenses() {
+  function getYearlyExpenses() {
     return (
-      eval($("#monthly_rent").val() * 12) 
-      + eval($("#insurances").val()) 
-      + eval($("#telephone").val() * 12) 
+      eval($("#monthly_rent").val() * 12)
+      + eval($("#insurances").val())
+      + eval($("#telephone").val() * 12)
       + eval($("#hobbies").val())
+      + eval($("#debt").val() * $("#interest_rate").val() * 0.01)
     ) 
- }
+  }
 
   function calcTax(income) {
     if (income < 18001) {
@@ -205,33 +259,45 @@
 
   function readFromLocal() {
     console.log("reading");
-    console.log(localStorage.orginal_income);
-    $("#orginal_income").val(localStorage.orginal_income);
+    $("#payg_income").val(localStorage.payg_income);
+    $("#aus_dividends").val(localStorage.aus_dividends);
+    $("#other_income").val(localStorage.other_income); 
+
+    $("#deductable_interest_rate").val(localStorage.deductable_interest_rate);
+    $("#deductable_debt").val(localStorage.deductable_debt);
     $("#interest_rate").val(localStorage.interest_rate);
     $("#debt").val(localStorage.debt);
+  
     $("#monthly_rent").val(localStorage.monthly_rent);
     $("#insurances").val(localStorage.insurances);
     $("#telephone").val(localStorage.telephone);
-    $("#interest_rate").val(localStorage.interest_rate);
     $("#hobbies").val(localStorage.hobbies);
   }
 
   function saveToLocal() {
 
-    localStorage.orginal_income = $("#orginal_income").val();
-    console.log(localStorage.orginal_income);
+    localStorage.payg_income = $("#payg_income").val();
+    localStorage.aus_dividends = $("#aus_dividends").val();
+    localStorage.other_income = $("#other_income").val();
+
+    localStorage.deductable_interest_rate = $("#deductable_interest_rate").val();
+    localStorage.deductable_debt = $("#deductable_debt").val();
     localStorage.interest_rate = $("#interest_rate").val();
     localStorage.debt = $("#debt").val();
+
     localStorage.monthly_rent = $("#monthly_rent").val();
     localStorage.insurances = $("#insurances").val();
     localStorage.telephone = $("#telephone").val();
     localStorage.hobbies = $("#hobbies").val();
-    //localStorage.orginal_income = $("#orginal_income").val();
-    //localStorage.orginal_income = $("#orginal_income").val();
+
   }
 
+  function clearLocal() {
+    localStorage.clear()
+  }
 
-
+  readFromLocal()
+  updateTax()
 
 
 </script>
