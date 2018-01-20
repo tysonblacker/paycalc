@@ -6,6 +6,7 @@
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
 
     <!-- Custom fonts for this template -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -23,25 +24,25 @@
 <div class="container bg-lightgreen">
   <h2>Tax Calculator</h2>
 
-<form>
+<form id="inputs">
   <h3>Income</h3>
   <div class="row">
     <div class="col-sm-3">
       <div class="form-group">
         <label for="payg_income">PAYG Income</label> 
-        <input type="text" id="payg_income" value="0" class="form-control"> 
+        <input type="number" id="payg_income" value="0" class="form-control" required> 
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
         <label for="aus_dividends">Australian Dividends</label> 
-        <input type="text" id="aus_dividends" value="0" class="form-control"> 
+        <input type="number" id="aus_dividends" value="0" class="form-control"> 
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
         <label for="other_income">Other Income</label> 
-        <input type="text" id="other_income" value="0" class="form-control">
+        <input type="number" id="other_income" value="0" class="form-control">
       </div>
     </div>
   </div> 
@@ -51,26 +52,26 @@
     <div class="col-sm-3">
       <div class="form-group">
         <label for="debt">Deductable Debt</label> 
-        <input type="text" id="deductable_debt" value="0" class="form-control">
+        <input type="number" id="deductable_debt" value="0" class="form-control">
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
         <label for="debt">Non-Deductable Debt</label> 
-        <input type="text" id="debt" value="0" class="form-control">
+        <input type="number" id="debt" value="0" class="form-control">
       </div>
     </div>
 
     <div class="col-sm-3">
       <div class="form-group">
         <label for="monthly_rent">Monthly Rent</label>
-        <input type="text" id="monthly_rent" value="0" class="form-control">
+        <input type="number" id="monthly_rent" value="0" class="form-control">
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
         <label for="hobbies">Hobby Memberships</label>
-        <input type="text" id="hobbies" class="form-control" value="0">
+        <input type="number" id="hobbies" class="form-control" value="0">
       </div>
     </div>
   </div>
@@ -78,26 +79,26 @@
     <div class="col-sm-3">
       <div class="form-group">
         <label for="interest_rate">Deductable Rate</label>
-        <input type="text" id="deductable_interest_rate" value="0" class="form-control">
+        <input type="number" id="deductable_interest_rate" value="0" class="form-control">
 
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
         <label for="interest_rate">Loan Rate</label>
-        <input type="text" id="interest_rate" value="0" class="form-control">
+        <input type="number" id="interest_rate" value="0" class="form-control">
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
         <label for="insurances"> Insurances and Rego</label>
-        <input type="text" id="insurances" value="0" class="form-control" placeholder="Car/health/property" >
+        <input type="number" id="insurances" value="0" class="form-control" placeholder="Car/health/property" >
       </div>
     </div>
     <div class="col-sm-3">
       <div class="form-group">
         <label for="telephone"> Phone Bill Monthly</label>
-        <input type="text" id="telephone" value="0" class="form-control">
+        <input type="number" id="telephone" value="0" class="form-control">
       </div>
     </div>
   </div>
@@ -106,7 +107,7 @@
 <button class="btn-primary btn btn-primary mt-25px" onclick="updateTax()">Crunch the numbers</button>
 <button class="btn-primary btn btn-primary mt-25px" onclick="readFromLocal()">Read</button>
 <button class="btn-primary btn btn-primary mt-25px" onclick="saveToLocal()">Save</button>
-<button class="btn-primary btn btn-primary mt-25px" onclick="clearLocal()">Clear Local</button>
+<button class="btn-primary btn btn-primary mt-25px" onclick="clearLocal()">Forget Values</button>
 <hr>
 <div class="col-sm-6">
 <table class="table">
@@ -120,7 +121,7 @@
     <td>Taxible Income</td><td id="taxible_income"></td><td>Company Tax</td><td id="company_tax"></td>
   </tr>
   <tr> 
-    <td>Medicare</td><td id="medicare_levy"></td>
+    <td>Medicare</td><td id="medicare_levy"></td><td>Total Expenses</td><td id="yearly_expenses"></td>
   </tr>
 </table>
 </div>
@@ -161,57 +162,59 @@
 
   function updateTax () {
 
-    var payg_income = $("#payg_income").val();
+    var payg_income = eval($("#payg_income").val()) || 0;
     console.log(payg_income)
 
     //$("#income").text(income);
 
-    var deductable_interest_rate = $("#deductable_interest_rate").val();
-    var deductable_debt = $("#deductable_debt").val();
+    var deductable_interest_rate = eval($("#deductable_interest_rate").val()) || 0;
+    var deductable_debt = eval($("#deductable_debt").val()) || 0;
     console.log("deductable debt " + deductable_debt + 
       " deductable_interest_rate " + deductable_interest_rate);
 
 
-    var yearly_rent = $("#monthly_rent").val() * 12;
-    var deductable_interest = deductable_interest_rate * deductable_debt * 0.01;
+    var yearly_rent = eval($("#monthly_rent").val()) * 12 || 0;
+    var deductable_interest = deductable_interest_rate * deductable_debt * 0.01 || 0;
     console.log("interest " + deductable_interest);
 
-    var total_dividends = eval($("#aus_dividends").val()) / .7 ;
+    var total_dividends = eval($("#aus_dividends").val()) / .7 || 0;
     console.log("total_dividends " + total_dividends);
     var company_tax = total_dividends * .3;
     console.log("company_tax " + company_tax)
-    var other_income = $("#other_income").val();
+    var other_income = eval($("#other_income").val()) || 0;
 
     // Calcualations
-    var taxible_income = eval(payg_income) +
-                         eval(other_income) + 
-                         eval(total_dividends) -
-                         eval(deductable_interest) ;
+    var taxible_income = payg_income +
+                         other_income + 
+                         total_dividends -
+                         deductable_interest;
     var tax = calcTax(taxible_income);
     var medicare_levy = 0.02 * taxible_income;
+
     var gross_income = taxible_income - tax - medicare_levy - company_tax;
-    
-    $("#total_dividends").text(total_dividends.toFixed(2));
-    $("#company_tax").text(company_tax.toFixed(2));
+
+    console.log("gross_income " + gross_income)
+
+    $("#total_dividends").text(audFormatter(total_dividends));
+    $("#company_tax").text(audFormatter(company_tax));
 
 
     // write the values to tables
-    $("#salary").text(payg_income);
-    $("#superannuation").text(payg_income * 0.095);
-    $("#taxible_income").text(eval(taxible_income).toFixed(2));
-    $("#tax").text(tax.toFixed(2));
+    $("#salary").text(audFormatter(payg_income));
+    $("#superannuation").text(audFormatter(payg_income * 0.095));
+    $("#taxible_income").text(audFormatter(taxible_income));
+    $("#tax").text(audFormatter(tax));
 
-    $("#gross_income").text(gross_income.toFixed(2));
-    $("#medicare_levy").text(medicare_levy.toFixed(2));
+    $("#gross_income").text(audFormatter(gross_income));
+    $("#medicare_levy").text(audFormatter(medicare_levy));
     $("#monthly_gross_income").text(monthly(gross_income));
     $("#weekly_gross_income").text(weekly(gross_income));
     $("#daily_gross_income").text(daily(gross_income));
-
-    console.log(getYearlyExpenses())
   
     post_expenses_income = gross_income - getYearlyExpenses();
-    $("#post_expenses").text(post_expenses_income.toFixed(2));
-    $("#medicare_levy").text(medicare_levy.toFixed(2));
+    $("#yearly_expenses").text(audFormatter(getYearlyExpenses()))
+    $("#post_expenses").text(audFormatter(post_expenses_income));
+    $("#medicare_levy").text(audFormatter(medicare_levy));
     $("#post_exp_monthly").text(monthly(post_expenses_income));
     $("#post_exp_weekly").text(weekly(post_expenses_income));
     $("#post_exp_daily").text(daily(post_expenses_income));
@@ -220,22 +223,22 @@
   }
 
   function monthly(yearly) {
-    return (yearly/12).toFixed(2)
+    return audFormatter((yearly/12))
   }
   function weekly(yearly) {
-    return (yearly/365*7).toFixed(2)
+    return audFormatter((yearly/365*7))
   }
   function daily(yearly) {
-    return (yearly/365).toFixed(2)
+    return audFormatter((yearly/365))
   }
 
   function getYearlyExpenses() {
     return (
-      eval($("#monthly_rent").val() * 12)
-      + eval($("#insurances").val())
-      + eval($("#telephone").val() * 12)
-      + eval($("#hobbies").val())
-      + eval($("#debt").val() * $("#interest_rate").val() * 0.01)
+      (eval($("#monthly_rent").val() * 12) || 0)
+      + (eval($("#insurances").val()) || 0)
+      + (eval($("#telephone").val() * 12) || 0)
+      + (eval($("#hobbies").val()) || 0)
+      + ((eval($("#debt").val()) * eval($("#interest_rate").val()) * 0.01) || 0)
     ) 
   }
 
@@ -293,11 +296,22 @@
   }
 
   function clearLocal() {
-    localStorage.clear()
+    localStorage.clear();
   }
 
-  readFromLocal()
-  updateTax()
+  $("inputs").validate();
+  readFromLocal();
+  updateTax();
+  
+  function audFormatter(number) {
+    if (eval(number) > 0) {
+      return eval(number).toLocaleString('en-AU', { style: 'currency', currency: 'AUD' });
+    }
+    else {
+      return eval(0).toLocaleString('en-AU', { style: 'currency', currency: 'AUD' });
+    }
+
+  }
 
 
 </script>

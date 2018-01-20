@@ -306,6 +306,11 @@ a {
   background: #eeffe2;
 }
 
+td {
+  padding-right: 20px;
+  text-align: right;
+}
+
 .rotate90 {
     -webkit-transform: rotate(90deg);
     -moz-transform: rotate(90deg);
